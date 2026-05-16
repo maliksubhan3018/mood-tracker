@@ -67,118 +67,118 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 20),
-                const Text(
-                  'How are you feeling today?',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.white,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+                  const Text(
+                    'How are you feeling today?',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w300,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: MoodType.values.map((type) {
-                    final isSelected = _selectedMood == type;
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedMood = type;
-                        });
-                      },
-                      child: AnimatedScale(
-                        scale: isSelected ? 1.1 : 1.0,
-                        duration: const Duration(milliseconds: 200),
-                        child: AnimatedContainer(
+                  const SizedBox(height: 40),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: MoodType.values.map((type) {
+                      final isSelected = _selectedMood == type;
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedMood = type;
+                          });
+                        },
+                        child: AnimatedScale(
+                          scale: isSelected ? 1.1 : 1.0,
                           duration: const Duration(milliseconds: 200),
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: isSelected
-                                ? MoodEntry.getColor(type).withOpacity(0.2)
-                                : Colors.white.withOpacity(0.05),
-                            border: Border.all(
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
                               color: isSelected
-                                  ? MoodEntry.getColor(type)
-                                  : Colors.transparent,
-                              width: 2,
+                                  ? MoodEntry.getColor(type).withOpacity(0.2)
+                                  : Colors.white.withOpacity(0.05),
+                              border: Border.all(
+                                color: isSelected
+                                    ? MoodEntry.getColor(type)
+                                    : Colors.transparent,
+                                width: 2,
+                              ),
                             ),
+                            child: MoodFace(type: type, size: 70),
                           ),
-                          child: MoodFace(type: type, size: 70),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 50),
+                  ElevatedButton(
+                    onPressed: _selectedMood == null ? null : _saveMood,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color(0xFF1A1A2E),
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 60, vertical: 18),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      disabledBackgroundColor: Colors.white10,
+                    ),
+                    child: const Text(
+                      'Save Mood',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  if (displayEntries.isNotEmpty) ...[
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Last 7 Entries',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white54,
+                          letterSpacing: 1.2,
                         ),
                       ),
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(height: 50),
-                ElevatedButton(
-                  onPressed: _selectedMood == null ? null : _saveMood,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF1A1A2E),
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 60, vertical: 18),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
                     ),
-                    disabledBackgroundColor: Colors.white10,
-                  ),
-                  child: const Text(
-                    'Save Mood',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const Spacer(),
-                if (displayEntries.isNotEmpty) ...[
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Last 7 Entries',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white54,
-                        letterSpacing: 1.2,
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      height: 160,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: displayEntries.length,
+                        clipBehavior: Clip.none,
+                        itemBuilder: (context, index) {
+                          return TimelineItem(
+                            entry: displayEntries[index],
+                          );
+                        },
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    height: 160,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: displayEntries.length,
-                      clipBehavior: Clip.none,
-                      itemBuilder: (context, index) {
-                        return TimelineItem(
-                          entry: displayEntries[index],
-                        );
-                      },
+                  ] else ...[
+                    const Opacity(
+                      opacity: 0.3,
+                      child: Column(
+                        children: [
+                          Icon(Icons.history, size: 48, color: Colors.white),
+                          SizedBox(height: 12),
+                          Text('No mood history yet'),
+                        ],
+                      ),
                     ),
-                  ),
-                ] else ...[
-                  const Spacer(),
-                  const Opacity(
-                    opacity: 0.3,
-                    child: Column(
-                      children: [
-                        Icon(Icons.history, size: 48, color: Colors.white),
-                        SizedBox(height: 12),
-                        Text('No mood history yet'),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
+                  ],
+                  const SizedBox(height: 40),
                 ],
-                const SizedBox(height: 40),
-              ],
+              ),
             ),
           ),
         ),
