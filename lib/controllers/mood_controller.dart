@@ -35,15 +35,54 @@ class MoodController extends GetxController {
       
       await _saveToStorage();
       
-      Get.snackbar(
-        'Success',
-        'Mood saved successfully!',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.deepPurpleAccent,
-        colorText: Colors.white,
-        margin: const EdgeInsets.all(15),
+      _showToast(
+        title: 'Success',
+        message: 'Mood saved successfully!',
+        icon: Icons.check_circle_outline,
+        color: Colors.greenAccent,
       );
     }
+  }
+
+  // Helper for compact ToastBar
+  void _showToast({
+    required String title,
+    required String message,
+    required IconData icon,
+    required Color color,
+  }) {
+    Get.rawSnackbar(
+      titleText: Text(
+        title,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+        ),
+      ),
+      messageText: Text(
+        message,
+        style: const TextStyle(
+          color: Colors.white70,
+          fontSize: 12,
+        ),
+      ),
+      icon: Icon(icon, color: color, size: 28),
+      backgroundColor: const Color(0xFF1A1A2E).withOpacity(0.9),
+      borderRadius: 20,
+      margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      snackPosition: SnackPosition.TOP,
+      duration: const Duration(seconds: 2),
+      isDismissible: true,
+      boxShadows: [
+        BoxShadow(
+          color: color.withOpacity(0.3),
+          blurRadius: 10,
+          spreadRadius: 1,
+        )
+      ],
+    );
   }
 
   // Delete mood from memory and storage
@@ -53,13 +92,11 @@ class MoodController extends GetxController {
     moodEntries.removeAt(index);
     await _saveToStorage();
     
-    Get.snackbar(
-      'Deleted',
-      'Entry removed from history',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.redAccent,
-      colorText: Colors.white,
-      margin: const EdgeInsets.all(15),
+    _showToast(
+      title: 'Deleted',
+      message: 'Entry removed from history',
+      icon: Icons.delete_outline,
+      color: Colors.redAccent,
     );
   }
 
