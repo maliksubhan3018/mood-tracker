@@ -1,15 +1,19 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:moodtracker/controllers/mood_controller.dart';
 import 'package:moodtracker/models/mood_entry.dart';
 import 'package:moodtracker/painters/mood_face_painter.dart';
 
 class TimelineItem extends StatefulWidget {
   final MoodEntry entry;
+  final int index;
 
   const TimelineItem({
     super.key,
     required this.entry,
+    required this.index,
   });
 
   @override
@@ -20,6 +24,7 @@ class _TimelineItemState extends State<TimelineItem>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
+  final MoodController moodController = Get.find();
 
   @override
   void initState() {
@@ -46,10 +51,31 @@ class _TimelineItemState extends State<TimelineItem>
     });
   }
 
+  void _handleLongPress() {
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: const Color(0xFF16213E),
+        title: const Text('Delete Entry?'),
+        content: const Text('Are you sure you want to remove this mood from your history?'),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text('CANCEL', style: TextStyle(color: Colors.white54)),
+          ),
+          TextButton(
+            onPressed: () => moodController.deleteMood(widget.index),
+            child: const Text('DELETE', style: TextStyle(color: Colors.redAccent)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _handleTap,
+      onLongPress: _handleLongPress,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
         child: BackdropFilter(

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:moodtracker/controllers/mood_controller.dart';
 import 'package:moodtracker/screens/home_screen.dart';
 
 void main() {
+  // Initialize GetX Controller
+  Get.put(MoodController());
   runApp(const MoodTrackerApp());
 }
 
@@ -11,7 +15,7 @@ class MoodTrackerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Mood Tracker',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

@@ -17,6 +17,20 @@ class MoodEntry {
     required this.color,
   });
 
+  Map<String, dynamic> toJson() => {
+        'type': type.index,
+        'date': date.toIso8601String(),
+      };
+
+  factory MoodEntry.fromJson(Map<String, dynamic> json) {
+    final type = MoodType.values[json['type']];
+    return MoodEntry(
+      type: type,
+      date: DateTime.parse(json['date']),
+      color: getColor(type),
+    );
+  }
+
   static Color getColor(MoodType type) {
     switch (type) {
       case MoodType.happy:
