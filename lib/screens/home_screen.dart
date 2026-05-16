@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moodtracker/models/mood_entry.dart';
 import 'package:moodtracker/painters/mood_face_painter.dart';
+import 'package:moodtracker/widgets/timeline_item.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -104,11 +105,42 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
-            const Spacer(),
-            const Text(
-              'Your Timeline will appear here',
-              style: TextStyle(color: Colors.white38),
-            ),
+            const SizedBox(height: 50),
+            if (_moodEntries.isNotEmpty) ...[
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Your Timeline',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                height: 150,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _moodEntries.length,
+                  itemBuilder: (context, index) {
+                    return TimelineItem(
+                      entry: _moodEntries[index],
+                      onTap: () {
+                        // Animation will be implemented in Step 5
+                      },
+                    );
+                  },
+                ),
+              ),
+            ] else ...[
+              const Spacer(),
+              const Text(
+                'No entries yet. Save your first mood!',
+                style: TextStyle(color: Colors.white38),
+              ),
+            ],
             const SizedBox(height: 40),
           ],
         ),
