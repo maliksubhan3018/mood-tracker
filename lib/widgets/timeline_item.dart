@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:moodtracker/models/mood_entry.dart';
@@ -5,12 +6,10 @@ import 'package:moodtracker/painters/mood_face_painter.dart';
 
 class TimelineItem extends StatefulWidget {
   final MoodEntry entry;
-  final VoidCallback? onTap;
 
   const TimelineItem({
     super.key,
     required this.entry,
-    this.onTap,
   });
 
   @override
@@ -45,51 +44,69 @@ class _TimelineItemState extends State<TimelineItem>
     _controller.forward().then((_) {
       _controller.reverse();
     });
-    if (widget.onTap != null) {
-      widget.onTap!();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _handleTap,
-      child: Container(
-        margin: const EdgeInsets.only(right: 16),
-        width: 100,
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.05),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: Colors.white.withOpacity(0.1),
-            width: 1,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            margin: const EdgeInsets.only(right: 16),
+            width: 110,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.1),
+                width: 1,
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  DateFormat('MMM d').format(widget.entry.date),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: MoodEntry.getColor(widget.entry.type)
+                              .withOpacity(0.3),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: MoodFace(type: widget.entry.type, size: 45),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  DateFormat('h:mm a').format(widget.entry.date),
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: Colors.white38,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              DateFormat('MMM d').format(widget.entry.date),
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.white54,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 12),
-            ScaleTransition(
-              scale: _scaleAnimation,
-              child: MoodFace(type: widget.entry.type, size: 50),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              DateFormat('h:mm a').format(widget.entry.date),
-              style: const TextStyle(
-                fontSize: 10,
-                color: Colors.white38,
-              ),
-            ),
-          ],
         ),
       ),
     );
